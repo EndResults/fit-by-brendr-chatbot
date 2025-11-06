@@ -34,7 +34,7 @@ export default function App() {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // ← geen dependency nodig
+  }, []); // geen dependency nodig
 
   // 3️⃣ Event handlers
   const handleWidgetAction = useCallback(async (action: FactAction) => {
@@ -54,20 +54,25 @@ export default function App() {
     <main className="flex min-h-screen flex-col items-center justify-end bg-slate-100 dark:bg-slate-950">
       <div className="mx-auto w-full max-w-5xl">
         <ChatKitPanel
-          colorScheme={scheme}
-          accentColor="#ff7a00"
-          fontFamily="'Inter', sans-serif"
-          radius="large"
-          startScreenGreeting={
-            lang === "nl"
-              ? "Welkom bij Brendr Assistant!"
-              : "Welcome to Brendr Assistant!"
-          }
-          composerPlaceholder={
-            lang === "nl"
-              ? "Typ hier je vraag over FiT of Brendr..."
-              : "Type your question about FiT or Brendr..."
-          }
+          // 🎨 Brendr theme configuratie
+          theme={{
+            colorScheme: scheme,
+            color: { accent: { primary: "#ff7a00" } },
+            typography: { fontFamily: "'Inter', sans-serif" },
+            radius: "large",
+          }}
+          startScreen={{
+            greeting:
+              lang === "nl"
+                ? "Welkom bij Brendr Assistant!"
+                : "Welcome to Brendr Assistant!",
+          }}
+          composer={{
+            placeholder:
+              lang === "nl"
+                ? "Typ hier je vraag over FiT of Brendr..."
+                : "Type your question about FiT or Brendr...",
+          }}
           onWidgetAction={handleWidgetAction}
           onResponseEnd={handleResponseEnd}
           onThemeRequest={setScheme}
