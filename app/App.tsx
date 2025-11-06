@@ -54,25 +54,20 @@ export default function App() {
     <main className="flex min-h-screen flex-col items-center justify-end bg-slate-100 dark:bg-slate-950">
       <div className="mx-auto w-full max-w-5xl">
         <ChatKitPanel
-          // 🎨 Brendr theme configuratie
-          theme={{
-            colorScheme: scheme,
-            color: { accent: { primary: "#ff7a00" } },
-            typography: { fontFamily: "'Inter', sans-serif" },
-            radius: "large",
-          }}
-          startScreen={{
-            greeting:
-              lang === "nl"
-                ? "Welkom bij Brendr Assistant!"
-                : "Welcome to Brendr Assistant!",
-          }}
-          composer={{
-            placeholder:
-              lang === "nl"
-                ? "Typ hier je vraag over FiT of Brendr..."
-                : "Type your question about FiT or Brendr...",
-          }}
+          // 🌙 Simpel dark/light theme (jouw build ondersteunt alleen dit)
+          theme={scheme}
+          // 🗣️ Dynamische teksten
+          startScreenGreeting={
+            lang === "nl"
+              ? "Welkom bij Brendr Assistant!"
+              : "Welcome to Brendr Assistant!"
+          }
+          composerPlaceholder={
+            lang === "nl"
+              ? "Typ hier je vraag over FiT of Brendr..."
+              : "Type your question about FiT or Brendr..."
+          }
+          // ⚙️ Event handlers
           onWidgetAction={handleWidgetAction}
           onResponseEnd={handleResponseEnd}
           onThemeRequest={setScheme}
