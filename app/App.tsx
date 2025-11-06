@@ -7,16 +7,19 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 export default function App() {
   const { scheme, setScheme } = useColorScheme();
 
-  // 🌍 Bepaal taal op basis van URL (bijv. ?lang=nl of ?lang=en)
+  // 🌍 Lees taal uit URL (?lang=nl of ?lang=en)
   const searchParams =
     typeof window !== "undefined"
       ? new URLSearchParams(window.location.search)
       : new URLSearchParams();
   const lang = searchParams.get("lang") || "nl";
 
-  // 🧠 Na render de taal instellen in ChatKit
+  // 🧠 Stel taal in zodra ChatKit geladen is
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window === "undefined") return;
+
+    let attempts = 0;
+    const interval = setInterval(() => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const chatkit = (window as any).chatkit;
       if (chatkit && typeof chatkit.setOptions === "function") {
@@ -28,10 +31,13 @@ export default function App() {
         } catch (err) {
           console.warn("[ChatKit] Could not set locale", err);
         }
+        clearInterval(interval);
       }
-    }
+      if (++attempts > 20) clearInterval(interval); // stop na ±4s
+    }, 200);
+    return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // alleen 1x uitvoeren bij mount
+  }, []); // alleen bij eerste render uitvoeren
 
   const handleWidgetAction = useCallback(async (action: FactAction) => {
     if (process.env.NODE_ENV !== "production") {
