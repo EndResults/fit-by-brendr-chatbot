@@ -74,15 +74,13 @@ const upstreamResponse = await fetch(url, {
   body: JSON.stringify({
     workflow: { id: resolvedWorkflowId },
     user: userId,
-    metadata: {
-      locale: urlLang, // 🔹 geef de taal mee aan ChatKit
-    },
     chatkit_configuration: {
-      file_upload: {
-        enabled:
-          parsedBody?.chatkit_configuration?.file_upload?.enabled ?? false,
-      },
-    },
+  locale: urlLang, // ✅ juiste plaats voor taal
+  file_upload: {
+    enabled:
+      parsedBody?.chatkit_configuration?.file_upload?.enabled ?? false,
+  },
+},
   }),
 });
 
