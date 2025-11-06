@@ -61,24 +61,31 @@ export async function POST(request: Request): Promise<Response> {
 
     const apiBase = process.env.CHATKIT_API_BASE ?? DEFAULT_CHATKIT_BASE;
     const url = `${apiBase}/v1/chatkit/sessions`;
-    const upstreamResponse = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${openaiApiKey}`,
-        "OpenAI-Beta": "chatkit_beta=v1",
+    // 🔹 Lees taal uit querystring (?lang=nl) of val terug op 'nl'
+const urlLang = new URL(request.url).searchParams.get("lang") || "nl";
+
+const upstreamResponse = await fetch(url, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${openaiApiKey}`,
+    "OpenAI-Beta": "chatkit_beta=v1",
+  },
+  body: JSON.stringify({
+    workflow: { id: resolvedWorkflowId },
+    user: userId,
+    metadata: {
+      locale: urlLang, // 🔹 geef de taal mee aan ChatKit
+    },
+    chatkit_configuration: {
+      file_upload: {
+        enabled:
+          parsedBody?.chatkit_configuration?.file_upload?.enabled ?? false,
       },
-      body: JSON.stringify({
-        workflow: { id: resolvedWorkflowId },
-        user: userId,
-        chatkit_configuration: {
-          file_upload: {
-            enabled:
-              parsedBody?.chatkit_configuration?.file_upload?.enabled ?? false,
-          },
-        },
-      }),
-    });
+    },
+  }),
+});
+
 
     if (process.env.NODE_ENV !== "production") {
       console.info("[create-session] upstream response", {
